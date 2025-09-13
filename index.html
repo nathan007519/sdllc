@@ -1,0 +1,894 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sustainable Smart City Assistant</title>
+  <!-- Tailwind CSS CDN for styling -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Inter font from Google Fonts -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+
+    /* Custom Scrollbar for sidebar and content */
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background-color: #6ee7b7;
+      /* green-300 */
+      border-radius: 10px;
+    }
+
+    /* Custom Tab underline */
+    .tab-active {
+      border-bottom-width: 3px;
+      border-color: #06b6d4;
+      /* cyan-600 */
+      font-weight: 700;
+      transition: all 0.3s ease-in-out;
+    }
+
+    /* Input focus ring override */
+    input:focus,
+    textarea:focus,
+    select:focus {
+      outline: none;
+      box-shadow: 0 0 0 3px #67e8f9;
+      /* cyan-300 ring */
+    }
+
+    /* Range slider custom thumb color */
+    input[type="range"]::-webkit-slider-thumb {
+      background-color: #ef4444;
+      /* red-500 */
+    }
+
+    input[type="range"]:focus::-webkit-slider-thumb {
+      box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.5);
+    }
+  </style>
+</head>
+
+<body class="bg-gradient-to-br from-gray-50 via-cyan-50 to-green-100 min-h-screen flex flex-col text-gray-900">
+  <!-- Overlay for mobile sidebar -->
+  <div id="sidebar-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-20 hidden md:hidden"></div>
+
+  <!-- Main layout container -->
+  <div class="flex flex-1 min-h-0">
+    <!-- Sidebar -->
+    <aside id="sidebar"
+      class="custom-scrollbar w-72 bg-white/90 backdrop-blur-lg border-r border-gray-200 flex flex-col text-gray-900 fixed inset-y-0 z-30 transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out"
+      aria-label="Sidebar">
+      <div class="flex items-center justify-center p-4 border-b border-gray-200">
+        <div class="text-2xl font-extrabold tracking-tight flex items-center space-x-3 text-cyan-700">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-9 w-9 text-green-500" fill="none" viewBox="0 0 24 24"
+            stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round"
+              d="M3 13l4-4 4 4m0 0l4-4 4 4M4 21v-2a4 4 0 014-4h8a4 4 0 014 4v2" />
+          </svg>
+          <span>Sustainable<br />Smart City</span>
+        </div>
+      </div>
+      <nav class="flex-1 p-4 text-base space-y-1">
+        <!-- Tab buttons -->
+        <button data-tab="home"
+          class="tab-btn flex items-center rounded-lg px-3 py-2 text-gray-900 hover:bg-green-100 transition-colors w-full font-semibold">
+          <span class="mr-3 text-xl" aria-hidden="true">🏙️</span> Home
+        </button>
+        <button data-tab="codegen"
+          class="tab-btn flex items-center rounded-lg px-3 py-2 text-gray-900 hover:bg-green-100 transition-colors w-full">
+          <span class="mr-3 text-xl" aria-hidden="true">🧠</span> Code Generator
+        </button>
+        <button data-tab="bugfix"
+          class="tab-btn flex items-center rounded-lg px-3 py-2 text-gray-900 hover:bg-green-100 transition-colors w-full">
+          <span class="mr-3 text-xl" aria-hidden="true">🐞</span> Bug Fixer
+        </button>
+        <button data-tab="codesum"
+          class="tab-btn flex items-center rounded-lg px-3 py-2 text-gray-900 hover:bg-green-100 transition-colors w-full">
+          <span class="mr-3 text-xl" aria-hidden="true">📜</span> Code Summarizer
+        </button>
+        <button data-tab="testgen"
+          class="tab-btn flex items-center rounded-lg px-3 py-2 text-gray-900 hover:bg-green-100 transition-colors w-full">
+          <span class="mr-3 text-xl" aria-hidden="true">🧪</span> Test Generator
+        </button>
+        <button data-tab="classify"
+          class="tab-btn flex items-center rounded-lg px-3 py-2 text-gray-900 hover:bg-green-100 transition-colors w-full">
+          <span class="mr-3 text-xl" aria-hidden="true">📄</span> Classify Requirements
+        </button>
+        <button data-tab="imagegen"
+          class="tab-btn flex items-center rounded-lg px-3 py-2 text-gray-900 hover:bg-green-100 transition-colors w-full">
+          <span class="mr-3 text-xl" aria-hidden="true">🎨</span> Image Generator
+        </button>
+        <button data-tab="chat"
+          class="tab-btn flex items-center rounded-lg px-3 py-2 text-gray-900 hover:bg-green-100 transition-colors w-full">
+          <span class="mr-3 text-xl" aria-hidden="true">💬</span> Chat Assistant
+        </button>
+        <button data-tab="feedback"
+          class="tab-btn flex items-center rounded-lg px-3 py-2 text-gray-900 hover:bg-green-100 transition-colors w-full">
+          <span class="mr-3 text-xl" aria-hidden="true">💡</span> Feedback
+        </button>
+      </nav>
+    </aside>
+
+    <!-- Main Area -->
+    <main class="flex-1 flex flex-col md:ml-72 min-h-screen overflow-auto p-6 custom-scrollbar">
+      <!-- Header -->
+      <header
+        class="flex items-center justify-between mb-8 bg-white/60 backdrop-blur rounded-xl p-4 drop-shadow-md">
+        <div class="flex items-center">
+          <!-- Hamburger Menu Button -->
+          <button id="menu-toggle" class="md:hidden p-2 rounded-md text-cyan-800 hover:bg-cyan-100 mr-4">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+            </svg>
+          </button>
+          <h1 class="text-xl sm:text-3xl font-extrabold text-cyan-800 flex items-center space-x-3">
+            <span class="text-2xl sm:text-4xl">🌿</span>
+            <span>Sustainable Smart City Assistant</span>
+          </h1>
+        </div>
+        <button
+          class="bg-green-500 hover:bg-green-600 active:bg-green-700 text-white font-semibold px-4 py-2 rounded-lg shadow-md focus:ring-4 focus:ring-green-300 transition duration-150">
+          Deploy
+        </button>
+      </header>
+
+      <!-- Message container (replaces alert) -->
+      <div id="messageBox"
+        class="hidden fixed bottom-6 right-6 z-50 p-4 rounded-lg shadow-lg text-white font-semibold transform transition-all duration-300"
+        role="alert">
+        <span id="messageText"></span>
+      </div>
+
+      <!-- Tabs Content -->
+      <section id="home" class="tab-content space-y-6">
+        <div
+          class="bg-white/70 backdrop-blur-md rounded-xl p-8 flex flex-col md:flex-row md:items-center md:justify-between gap-6 min-h-[250px]">
+          <div class="flex-1">
+            <h2 class="text-4xl font-extrabold text-green-900 mb-2 flex items-center space-x-3">
+              <span>🌆</span>
+              <span>Welcome to <span class="text-cyan-600">SmartSDLC</span></span>
+            </h2>
+            <p class="text-lg text-green-800 max-w-xl">
+              Empowering sustainable smart city development with AI-enhanced automation throughout your software
+              development lifecycle.
+            </p>
+          </div>
+          <div class="flex-1 max-w-md flex justify-center">
+            <img src="https://placehold.co/400x256/22d3ee/FFFFFF?text=Smart+City"
+              alt="Digital conceptual image showing a futuristic smart city with green spaces, solar panels, and advanced technology integration, visualizing sustainability and innovation"
+              class="rounded-xl shadow-lg object-contain max-h-64 w-full" />
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <article
+            class="bg-white/80 backdrop-blur-md rounded-xl p-6 shadow-sm hover:shadow-lg transition cursor-pointer text-green-900">
+            <h3 class="font-semibold text-xl mb-2 flex items-center space-x-2">
+              <span>📁</span><span>Classify Requirements</span>
+            </h3>
+            <p>Auto-organize your software requirements by SDLC phase to streamline planning and execution.</p>
+          </article>
+          <article
+            class="bg-white/80 backdrop-blur-md rounded-xl p-6 shadow-sm hover:shadow-lg transition cursor-pointer text-green-900">
+            <h3 class="font-semibold text-xl mb-2 flex items-center space-x-2">
+              <span>🤖</span><span>AI Code Generator</span>
+            </h3>
+            <p>Generate production-ready code from your natural language software requirements.</p>
+          </article>
+          <article
+            class="bg-white/80 backdrop-blur-md rounded-xl p-6 shadow-sm hover:shadow-lg transition cursor-pointer text-green-900">
+            <h3 class="font-semibold text-xl mb-2 flex items-center space-x-2">
+              <span>🧪</span><span>Test Generator</span>
+            </h3>
+            <p>Automatically create unit test cases based on your application code to improve quality.</p>
+          </article>
+        </div>
+      </section>
+
+      <!-- AI-Powered Code Generator Tab -->
+      <section id="codegen"
+        class="tab-content hidden max-w-4xl mx-auto bg-cyan-100/70 backdrop-blur rounded-xl p-8 shadow-md space-y-6">
+        <h2 class="text-3xl font-bold text-cyan-900 flex items-center space-x-3">
+          <span>💻</span><span>AI-Powered Code Generator</span>
+        </h2>
+        <form id="codeGenForm" class="space-y-4">
+          <label for="requirement" class="block font-semibold text-cyan-800">📝 Requirement Description</label>
+          <textarea id="requirement" name="requirement" rows="5"
+            placeholder="Enter your functional requirement here, e.g., 'A Python function to calculate the factorial of a number.'"
+            class="w-full rounded-lg border border-cyan-300 p-3 text-cyan-900 focus:ring-2 focus:ring-cyan-400"></textarea>
+          <label for="langSelect" class="block font-semibold text-cyan-800">⚙️ Select Language</label>
+          <select id="langSelect"
+            class="w-full rounded-lg border border-cyan-300 p-2 text-cyan-900 focus:ring-2 focus:ring-cyan-400">
+            <option>Python</option>
+            <option>JavaScript</option>
+            <option>Java</option>
+            <option>C#</option>
+            <option>TypeScript</option>
+          </select>
+          <button type="submit" id="btnGenerateCode"
+            class="bg-cyan-600 hover:bg-cyan-700 disabled:bg-cyan-300 text-white px-5 py-3 rounded-lg font-semibold transition">
+            🚀 Generate Code
+          </button>
+          <div id="codeGenStatus"
+            class="hidden text-center bg-gray-100 border border-gray-300 text-gray-700 px-3 py-2 rounded-lg mt-2 font-medium">
+            Generating code...
+          </div>
+        </form>
+        <div id="codeGenOutputContainer" class="hidden relative">
+          <button id="copyCodeBtn"
+            class="absolute top-2 right-2 bg-gray-600 hover:bg-gray-700 text-white text-xs font-semibold py-1 px-2 rounded-md transition focus:ring-2 focus:ring-offset-2 focus:ring-cyan-400">
+            Copy
+          </button>
+          <pre id="generatedCode" tabindex="0"
+            class="bg-white p-4 rounded-lg shadow text-sm max-h-96 overflow-auto whitespace-pre-wrap font-mono text-cyan-900 border border-cyan-200 pt-8"></pre>
+        </div>
+      </section>
+
+      <!-- AI-Powered Bug Fixer Tab -->
+      <section id="bugfix"
+        class="tab-content hidden max-w-4xl mx-auto bg-cyan-100/70 backdrop-blur rounded-xl p-8 shadow-md space-y-6">
+        <h2 class="text-3xl font-bold text-cyan-900 flex items-center space-x-3">
+          <span>🔧</span><span>AI-Powered Bug Fixer</span>
+        </h2>
+        <form id="bugFixForm" class="space-y-4">
+          <label for="buggyCode" class="block font-semibold text-cyan-800">🐞 Paste Your Buggy Code</label>
+          <textarea id="buggyCode" name="buggyCode" rows="8" placeholder="Enter code with bugs here"
+            class="w-full rounded-lg border border-cyan-300 p-3 text-cyan-900 font-mono focus:ring-2 focus:ring-cyan-400"></textarea>
+          <label for="bugLangSelect" class="block font-semibold text-cyan-800">🛠 Select Programming Language</label>
+          <select id="bugLangSelect"
+            class="w-full rounded-lg border border-cyan-300 p-2 text-cyan-900 focus:ring-2 focus:ring-cyan-400">
+            <option>Python</option>
+            <option>JavaScript</option>
+            <option>Java</option>
+            <option>C#</option>
+            <option>Ruby</option>
+          </select>
+          <button type="submit" id="btnFixBugs"
+            class="bg-cyan-600 hover:bg-cyan-700 disabled:bg-cyan-300 text-white px-5 py-3 rounded-lg font-semibold transition">
+            🔍 Fix Bugs
+          </button>
+          <div id="bugFixStatus"
+            class="hidden text-center bg-gray-100 border border-gray-300 text-gray-700 px-3 py-2 rounded-lg mt-2 font-medium">
+            Analyzing and fixing bugs...
+          </div>
+        </form>
+        <pre id="fixedCode" tabindex="0"
+          class="bg-white p-4 rounded-lg shadow text-sm max-h-96 overflow-auto whitespace-pre-wrap font-mono text-cyan-900 border border-cyan-200"></pre>
+      </section>
+
+      <!-- Code Summarizer Tab -->
+      <section id="codesum"
+        class="tab-content hidden max-w-4xl mx-auto bg-cyan-100/70 backdrop-blur rounded-xl p-8 shadow-md space-y-6">
+        <h2 class="text-3xl font-bold text-cyan-900 flex items-center space-x-3">
+          <span>📜</span><span>Code Summarizer</span>
+        </h2>
+        <form id="codeSumForm" class="space-y-4">
+          <label for="codeToSummarize" class="block font-semibold text-cyan-800">🐚 Paste the code you'd like to
+            summarize</label>
+          <textarea id="codeToSummarize" name="codeToSummarize" rows="8" placeholder="Enter your source code here"
+            class="w-full rounded-lg border border-cyan-300 p-3 text-cyan-900 font-mono focus:ring-2 focus:ring-cyan-400"></textarea>
+          <label for="sumLangSelect" class="block font-semibold text-cyan-800">🗂 Select Programming Language</label>
+          <select id="sumLangSelect"
+            class="w-full rounded-lg border border-cyan-300 p-2 text-cyan-900 focus:ring-2 focus:ring-cyan-400">
+            <option>Python</option>
+            <option>JavaScript</option>
+            <option>Java</option>
+            <option>C#</option>
+            <option>Ruby</option>
+          </select>
+          <button type="submit" id="btnSummarizeCode"
+            class="bg-cyan-600 hover:bg-cyan-700 disabled:bg-cyan-300 text-white px-5 py-3 rounded-lg font-semibold transition">
+            📄 Summarize Code
+          </button>
+          <div id="codeSumStatus"
+            class="hidden text-center bg-gray-100 border border-gray-300 text-gray-700 px-3 py-2 rounded-lg mt-2 font-medium">
+            Generating summary...
+          </div>
+        </form>
+        <section id="codeSummary"
+          class="bg-white p-4 rounded-lg shadow text-cyan-900 max-h-72 overflow-auto border border-cyan-200"></section>
+      </section>
+
+      <!-- AI Unit Test Generator Tab -->
+      <section id="testgen"
+        class="tab-content hidden max-w-4xl mx-auto bg-cyan-100/70 backdrop-blur rounded-xl p-8 shadow-md space-y-6">
+        <h2 class="text-3xl font-bold text-cyan-900 flex items-center space-x-3">
+          <span>🧪</span><span>AI Unit Test Generator</span>
+        </h2>
+        <form id="testGenForm" class="space-y-4">
+          <label for="codeInput" class="block font-semibold text-cyan-800">📜 Paste your code to generate tests</label>
+          <textarea id="codeInput" name="codeInput" rows="8" placeholder="Paste your source code here"
+            class="w-full rounded-lg border border-cyan-300 p-3 text-cyan-900 font-mono focus:ring-2 focus:ring-cyan-400"></textarea>
+          <label for="testLangSelect" class="block font-semibold text-cyan-800">🔧 Select Programming Language</label>
+          <select id="testLangSelect"
+            class="w-full rounded-lg border border-cyan-300 p-2 text-cyan-900 focus:ring-2 focus:ring-cyan-400">
+            <option>Python</option>
+            <option>JavaScript</option>
+            <option>Java</option>
+            <option>C#</option>
+            <option>Ruby</option>
+          </select>
+          <button type="submit" id="btnGenerateTests"
+            class="bg-cyan-600 hover:bg-cyan-700 disabled:bg-cyan-300 text-white px-5 py-3 rounded-lg font-semibold transition">
+            🐙 Generate Unit Tests
+          </button>
+          <div id="testGenStatus"
+            class="hidden text-center bg-gray-100 border border-gray-300 text-gray-700 px-3 py-2 rounded-lg mt-2 font-medium">
+            Generating tests...
+          </div>
+        </form>
+        <pre id="generatedTests" tabindex="0"
+          class="bg-white p-4 rounded-lg shadow text-sm max-h-96 overflow-auto whitespace-pre-wrap font-mono text-cyan-900 border border-cyan-200"></pre>
+      </section>
+
+      <!-- AI Requirement Classifier Tab -->
+      <section id="classify"
+        class="tab-content hidden max-w-4xl mx-auto bg-cyan-100/70 backdrop-blur rounded-xl p-8 shadow-md space-y-6">
+        <h2 class="text-3xl font-bold text-cyan-900 flex items-center space-x-3 mb-4">
+          <span>📄</span><span>AI Requirement Classifier</span>
+        </h2>
+        <form id="classifyForm" class="space-y-4">
+          <label for="classifyInput" class="block font-semibold text-cyan-800 mb-2 flex items-center space-x-2">
+            <span>📝</span>
+            <span>Paste your software requirements or user stories here.</span>
+          </label>
+          <textarea id="classifyInput" rows="8"
+            placeholder="e.g., 'As a user, I want to log in securely using my email and password.'"
+            class="w-full rounded-lg border border-cyan-300 p-3 text-cyan-900 focus:ring-2 focus:ring-cyan-400"></textarea>
+          <button type="submit" id="btnClassify"
+            class="mt-2 bg-cyan-600 hover:bg-cyan-700 disabled:bg-cyan-300 text-white px-5 py-3 rounded-lg font-semibold transition">
+            Classify Requirements
+          </button>
+          <div id="classifyStatus"
+            class="hidden text-center bg-gray-100 border border-gray-300 text-gray-700 px-3 py-2 rounded-lg mt-2 font-medium">
+            Classifying requirements...
+          </div>
+        </form>
+        <div id="classifyResult"
+          class="hidden bg-white/90 rounded-lg p-4 text-cyan-900 shadow-md max-h-72 overflow-auto custom-scrollbar">
+          <!-- Classification result will be shown here -->
+        </div>
+      </section>
+
+      <!-- AI Image Generator Tab -->
+      <section id="imagegen"
+        class="tab-content hidden max-w-4xl mx-auto bg-cyan-100/70 backdrop-blur rounded-xl p-8 shadow-md space-y-6">
+        <h2 class="text-3xl font-bold text-cyan-900 flex items-center space-x-3">
+          <span>🎨</span><span>AI-Powered Image Generator</span>
+        </h2>
+        <form id="imageGenForm" class="space-y-4">
+          <label for="imagePrompt" class="block font-semibold text-cyan-800">🖼️ Image Description</label>
+          <textarea id="imagePrompt" name="imagePrompt" rows="3"
+            placeholder="Describe the image you want to generate, e.g., 'A futuristic city skyline with solar panels and electric flying cars, digital art.'"
+            class="w-full rounded-lg border border-cyan-300 p-3 text-cyan-900 focus:ring-2 focus:ring-cyan-400"></textarea>
+          <button type="submit" id="btnGenerateImage"
+            class="bg-cyan-600 hover:bg-cyan-700 disabled:bg-cyan-300 text-white px-5 py-3 rounded-lg font-semibold transition">
+            Generate Image
+          </button>
+          <div id="imageGenStatus"
+            class="hidden text-center bg-gray-100 border border-gray-300 text-gray-700 px-3 py-2 rounded-lg mt-2 font-medium">
+            Generating image...
+          </div>
+        </form>
+        <div id="generatedImageContainer" class="hidden bg-white/90 rounded-lg p-4 shadow-md text-center">
+          <img id="generatedImage" class="rounded-lg shadow-inner w-full max-w-2xl mx-auto" alt="Generated image">
+        </div>
+      </section>
+
+      <!-- Chat Assistant Tab -->
+      <section id="chat"
+        class="tab-content hidden max-w-4xl mx-auto bg-white/70 backdrop-blur rounded-xl p-8 shadow-md space-y-4">
+        <h2 class="text-3xl font-bold text-green-900 flex items-center space-x-3">
+          <span>💬</span><span>Chat with SmartSDLC Assistant</span>
+        </h2>
+        <div id="chatMessages" role="log" aria-live="polite"
+          class="chat-container custom-scrollbar max-h-80 overflow-y-auto rounded-lg bg-white p-4 shadow-inner text-green-900 font-sans text-sm space-y-4 border border-green-200">
+          <!-- Chat messages will appear here -->
+        </div>
+        <form id="chatForm" class="flex flex-col sm:flex-row gap-4">
+          <input id="chatInput" type="text" required aria-label="Ask SmartSDLC Assistant a question"
+            placeholder="What are the different phases of SDLC?"
+            class="flex-1 rounded-lg border border-green-400 p-3 focus:ring-2 focus:ring-cyan-400" />
+          <button type="submit"
+            class="bg-green-600 hover:bg-green-700 text-white px-5 py-3 rounded-lg font-semibold transition w-full sm:w-auto">
+            Send
+          </button>
+        </form>
+      </section>
+
+      <!-- Feedback Tab -->
+      <section id="feedback"
+        class="tab-content hidden max-w-3xl mx-auto bg-green-100/70 backdrop-blur rounded-xl p-8 shadow-md space-y-6">
+        <h2 class="text-3xl font-bold text-green-900 flex items-center space-x-3">
+          <span>💡</span><span>We Value Your Feedback</span>
+        </h2>
+        <form id="feedbackForm" class="space-y-4">
+          <div>
+            <label for="name" class="block font-semibold text-green-800 mb-1">🙋 Your Name</label>
+            <input id="name" type="text" required
+              class="w-full rounded-lg border border-green-300 px-3 py-2 text-green-900 focus:ring-2 focus:ring-green-400" />
+          </div>
+          <div>
+            <label for="feedbackInput" class="block font-semibold text-green-800 mb-1">💡 Your Feedback</label>
+            <textarea id="feedbackInput" rows="4" required
+              class="w-full rounded-lg border border-green-300 px-3 py-2 text-green-900 focus:ring-2 focus:ring-green-400"></textarea>
+          </div>
+          <div>
+            <label for="rating" class="block font-semibold text-green-800 mb-1">⭐ Rating (1 = Bad, 5 = Excellent)</label>
+            <input id="rating" type="range" min="1" max="5" step="1" value="3"
+              class="w-full accent-green-500 cursor-pointer" />
+            <div class="flex justify-between text-xs text-green-700">
+              <span>1</span>
+              <span>2</span>
+              <span>3</span>
+              <span>4</span>
+              <span>5</span>
+            </div>
+          </div>
+          <button type="submit"
+            class="bg-green-600 hover:bg-green-700 text-white px-5 py-3 rounded-lg font-semibold transition">
+            📨 Submit Feedback
+          </button>
+        </form>
+      </section>
+    </main>
+  </div>
+
+  <!-- JavaScript to manage tabs and handle dynamic API calls -->
+  <script>
+    // Constants for API calls
+    const API_BASE_URL = "http://127.0.0.1:5000/api";
+
+    // UI elements
+    const tabButtons = document.querySelectorAll(".tab-btn");
+    const tabContents = document.querySelectorAll(".tab-content");
+    const messageBox = document.getElementById('messageBox');
+    const messageText = document.getElementById('messageText');
+    const chatMessages = document.getElementById('chatMessages');
+    const menuToggle = document.getElementById('menu-toggle');
+    const sidebar = document.getElementById('sidebar');
+    const sidebarOverlay = document.getElementById('sidebar-overlay');
+
+    // --- Core UI Functions ---
+
+    /**
+     * Toggles the visibility of tabs based on the selected tab name.
+     * @param {string} tabName The ID of the tab to show.
+     */
+    function selectTab(tabName) {
+      tabButtons.forEach(btn => {
+        const isActive = btn.dataset.tab === tabName;
+        btn.classList.toggle("bg-green-100", isActive);
+        btn.classList.toggle("font-extrabold", isActive);
+        btn.classList.toggle("tab-active", isActive);
+      });
+      tabContents.forEach(content => {
+        content.classList.toggle("hidden", content.id !== tabName);
+      });
+    }
+
+    /**
+     * Displays a temporary message box with a status color.
+     * @param {string} message The message to display.
+     * @param {string} type The message type ('success', 'error', 'info').
+     */
+    function showMessage(message, type) {
+      messageBox.classList.remove('hidden', 'bg-red-500', 'bg-green-500', 'bg-blue-500');
+      messageBox.classList.add('flex', 'items-center', 'space-x-2', 'opacity-100');
+      messageText.textContent = message;
+      if (type === 'success') {
+        messageBox.classList.add('bg-green-500');
+      } else if (type === 'error') {
+        messageBox.classList.add('bg-red-500');
+      } else { // info
+        messageBox.classList.add('bg-blue-500');
+      }
+      // Hide message after 3 seconds
+      setTimeout(() => {
+        messageBox.classList.remove('opacity-100');
+        messageBox.classList.add('opacity-0');
+        setTimeout(() => {
+          messageBox.classList.add('hidden');
+        }, 300);
+      }, 3000);
+    }
+
+    /**
+     * Appends a new message to the chat message container.
+     * @param {string} sender 'You' or 'Bot'.
+     * @param {string} content The message content.
+     */
+    function appendChatMessage(sender, content) {
+      const container = document.createElement('div');
+      container.classList.add(sender === 'You' ? 'text-right' : 'text-left');
+
+      const msgBox = document.createElement('div');
+      msgBox.classList.add('inline-block', 'rounded-lg', 'p-3', 'max-w-[80%]');
+
+      if (sender === 'You') {
+        msgBox.classList.add('bg-cyan-100', 'text-cyan-900', 'font-semibold', 'shadow-sm');
+        msgBox.textContent = content;
+      } else {
+        msgBox.classList.add('bg-green-50', 'text-green-900', 'border', 'border-green-300', 'shadow-sm', 'whitespace-pre-wrap');
+        msgBox.innerHTML = `<strong>Assistant:</strong> ${content}`;
+      }
+
+      container.appendChild(msgBox);
+      chatMessages.appendChild(container);
+      chatMessages.scrollTop = chatMessages.scrollHeight; // Auto-scroll to latest message
+    }
+
+    /**
+     * Cleans and formats text from the API to be displayed as HTML.
+     * @param {string} text The raw text from the API.
+     * @returns {string} Formatted HTML string.
+     */
+    function formatResponseToHtml(text) {
+      let formattedText = text.trim();
+
+      // Remove markdown code fences if they wrap the whole text
+      if (formattedText.startsWith('```') && formattedText.endsWith('```')) {
+        const firstNewline = formattedText.indexOf('\n');
+        const lastFence = formattedText.lastIndexOf('```');
+        if (firstNewline !== -1 && lastFence !== -1) {
+          formattedText = formattedText.substring(firstNewline + 1, lastFence).trim();
+        }
+      }
+
+      // Convert Markdown bold (**text**) to HTML strong
+      formattedText = formattedText.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+
+      // Convert newlines to <br> for HTML rendering
+      formattedText = formattedText.replace(/\n/g, '<br>');
+
+      return formattedText;
+    }
+
+
+    // --- API Call Functions ---
+
+    /**
+     * Generic function to call the Flask backend for text-based tasks.
+     * @param {string} task The task type ('chat', 'codegen', 'bugfix', etc.).
+     * @param {string} prompt The prompt to send to the backend.
+     * @param {string} lang The programming language (optional).
+     * @returns {Promise<string>} A promise that resolves with the generated text.
+     */
+    async function callBackendAPI(task, prompt, lang = '') {
+      const payload = {
+        task: task,
+        prompt: prompt,
+        lang: lang
+      };
+
+      const url = `${API_BASE_URL}/text_generation`;
+
+      try {
+        const response = await fetch(url, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(payload)
+        });
+        const result = await response.json();
+        if (result.text) {
+          return result.text;
+        } else {
+          console.error("Backend API Error:", result.error);
+          return 'Sorry, I couldn\'t generate a response. Please try again.';
+        }
+      } catch (error) {
+        console.error("Fetch error on URL:", url, error);
+        return 'An error occurred. Please check the backend server.';
+      }
+    }
+
+
+    /**
+     * Function to call the Flask backend for image generation.
+     * @param {string} prompt The prompt for the image.
+     * @returns {Promise<string>} A promise that resolves with the image data URL.
+     */
+    async function callBackendImageAPI(prompt) {
+      const payload = {
+        prompt: prompt
+      };
+
+      const url = `${API_BASE_URL}/image_generation`;
+
+      try {
+        const response = await fetch(url, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(payload)
+        });
+        const result = await response.json();
+        if (response.ok && result.image) {
+          return result.image;
+        } else {
+          console.error("Image API Error:", result.error);
+          return null;
+        }
+      } catch (error) {
+        console.error("Fetch error on URL:", url, error);
+        return null;
+      }
+    }
+
+
+    // --- Event Listeners and Form Handlers ---
+
+    document.addEventListener("DOMContentLoaded", () => {
+      // Mobile Menu Toggle
+      menuToggle.addEventListener('click', () => {
+        sidebar.classList.toggle('-translate-x-full');
+        sidebarOverlay.classList.toggle('hidden');
+      });
+
+      sidebarOverlay.addEventListener('click', () => {
+        sidebar.classList.add('-translate-x-full');
+        sidebarOverlay.classList.add('hidden');
+      });
+
+      // Set up tab switching listeners
+      tabButtons.forEach(btn => {
+        btn.addEventListener("click", () => {
+          selectTab(btn.dataset.tab);
+          // Close sidebar on mobile after selection
+          if (window.innerWidth < 768) { // 768px is Tailwind's md breakpoint
+            sidebar.classList.add('-translate-x-full');
+            sidebarOverlay.classList.add('hidden');
+          }
+        });
+      });
+      // Default tab on load
+      selectTab("home");
+
+      // Code Generator Form
+      document.getElementById('codeGenForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const req = document.getElementById('requirement').value.trim();
+        const lang = document.getElementById('langSelect').value;
+        const btn = document.getElementById('btnGenerateCode');
+        const status = document.getElementById('codeGenStatus');
+        const outputContainer = document.getElementById('codeGenOutputContainer');
+        const output = document.getElementById('generatedCode');
+
+        if (!req) {
+          showMessage('Please enter a requirement description.', 'info');
+          return;
+        }
+
+        btn.disabled = true;
+        status.classList.remove('hidden');
+        outputContainer.classList.add('hidden');
+        output.textContent = '';
+
+        const rawResponse = await callBackendAPI('codegen', req, lang);
+
+        // Function to extract only the code from a markdown block
+       function extractCode(text) {
+            // This regular expression looks for content inside triple backticks (```).
+            // It optionally handles a language identifier (like 'javascript') after the opening backticks.
+            const codeBlockRegex = /```(?:\w*\n)?([\s\S]*?)```/;
+
+            const match = text.match(codeBlockRegex);
+
+            // If a code block is found, return its content (the first captured group).
+            // Otherwise, return the original text.
+            return match ? match[1].trim() : text;
+            }
+
+        const justTheCode = extractCode(rawResponse);
+
+        output.textContent = justTheCode;
+        outputContainer.classList.remove('hidden');
+        status.classList.add('hidden');
+        btn.disabled = false;
+        showMessage('Code generated successfully!', 'success');
+      });
+
+      // Copy Code Button
+      document.getElementById('copyCodeBtn').addEventListener('click', () => {
+        const codeToCopy = document.getElementById('generatedCode').textContent;
+        const tempTextArea = document.createElement('textarea');
+        tempTextArea.value = codeToCopy;
+        document.body.appendChild(tempTextArea);
+        tempTextArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(tempTextArea);
+        showMessage('Code copied to clipboard!', 'success');
+      });
+
+      // Bug Fixer Form
+      document.getElementById('bugFixForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const code = document.getElementById('buggyCode').value.trim();
+        const lang = document.getElementById('bugLangSelect').value;
+        const btn = document.getElementById('btnFixBugs');
+        const status = document.getElementById('bugFixStatus');
+        const output = document.getElementById('fixedCode');
+
+        if (!code) {
+          showMessage('Please paste your buggy code.', 'info');
+          return;
+        }
+
+        btn.disabled = true;
+        status.classList.remove('hidden');
+        output.textContent = '';
+
+        const fixed = await callBackendAPI('bugfix', code, lang);
+
+        output.textContent = fixed;
+        status.classList.add('hidden');
+        btn.disabled = false;
+        showMessage('Bug fixed successfully!', 'success');
+      });
+
+      // Code Summarizer Form
+      document.getElementById('codeSumForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const code = document.getElementById('codeToSummarize').value.trim();
+        const lang = document.getElementById('sumLangSelect').value;
+        const btn = document.getElementById('btnSummarizeCode');
+        const status = document.getElementById('codeSumStatus');
+        const output = document.getElementById('codeSummary');
+
+        if (!code) {
+          showMessage('Please paste code to summarize.', 'info');
+          return;
+        }
+
+        btn.disabled = true;
+        status.classList.remove('hidden');
+        output.innerHTML = '';
+
+        const rawSummary = await callBackendAPI('codesum', code, lang);
+        const finalHtml = formatResponseToHtml(rawSummary);
+
+        output.innerHTML = finalHtml;
+        status.classList.add('hidden');
+        btn.disabled = false;
+        showMessage('Code summary generated!', 'success');
+      });
+
+      // Unit Test Generator Form
+      document.getElementById('testGenForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const code = document.getElementById('codeInput').value.trim();
+        const lang = document.getElementById('testLangSelect').value;
+        const btn = document.getElementById('btnGenerateTests');
+        const status = document.getElementById('testGenStatus');
+        const output = document.getElementById('generatedTests');
+
+        if (!code) {
+          showMessage('Please paste your code to generate tests.', 'info');
+          return;
+        }
+
+        btn.disabled = true;
+        status.classList.remove('hidden');
+        output.textContent = '';
+
+        const tests = await callBackendAPI('testgen', code, lang);
+
+        output.textContent = tests;
+        status.classList.add('hidden');
+        btn.disabled = false;
+        showMessage('Unit tests generated!', 'success');
+      });
+
+      // Requirement Classifier Form
+      document.getElementById('classifyForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const text = document.getElementById('classifyInput').value.trim();
+        const btn = document.getElementById('btnClassify');
+        const status = document.getElementById('classifyStatus');
+        const output = document.getElementById('classifyResult');
+
+        if (!text) {
+          showMessage('Please enter requirements to classify.', 'info');
+          return;
+        }
+
+        btn.disabled = true;
+        status.classList.remove('hidden');
+        output.innerHTML = '';
+
+        const classification = await callBackendAPI('classify', text);
+        const finalHtml = formatResponseToHtml(classification);
+
+        output.innerHTML = finalHtml;
+        output.classList.remove('hidden');
+        status.classList.add('hidden');
+        btn.disabled = false;
+        showMessage('Requirements classified successfully!', 'success');
+      });
+
+      // Image Generator Form
+      document.getElementById('imageGenForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const prompt = document.getElementById('imagePrompt').value.trim();
+        const btn = document.getElementById('btnGenerateImage');
+        const status = document.getElementById('imageGenStatus');
+        const outputContainer = document.getElementById('generatedImageContainer');
+        const outputImage = document.getElementById('generatedImage');
+
+        if (!prompt) {
+          showMessage('Please enter a description for the image.', 'info');
+          return;
+        }
+
+        btn.disabled = true;
+        btn.textContent = 'Generating...';
+        status.classList.remove('hidden');
+        outputContainer.classList.add('hidden');
+
+        const imageUrl = await callBackendImageAPI(prompt);
+
+        if (imageUrl) {
+          outputImage.src = imageUrl;
+          outputContainer.classList.remove('hidden');
+          showMessage('Image generated!', 'success');
+        } else {
+          showMessage('Image generation failed. Please try again.', 'error');
+        }
+
+        btn.disabled = false;
+        btn.textContent = 'Generate Image';
+        status.classList.add('hidden');
+      });
+
+      // Chat Assistant Form
+      document.getElementById('chatForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const userQuestion = document.getElementById('chatInput').value.trim();
+        if (!userQuestion) return;
+
+        appendChatMessage('You', userQuestion);
+        document.getElementById('chatInput').value = '';
+
+        // Add a temporary "typing" message
+        const thinkingMessage = "Thinking...";
+        appendChatMessage('Bot', thinkingMessage);
+
+        const botResponse = await callBackendAPI('chat', userQuestion);
+        const formattedResponse = formatResponseToHtml(botResponse);
+
+        // Remove the temporary message and append the real response
+        chatMessages.lastChild.remove();
+        appendChatMessage('Bot', formattedResponse);
+      });
+
+      // Feedback Form Submission (replaces alert with a custom message)
+      document.getElementById('feedbackForm').addEventListener('submit', e => {
+        e.preventDefault();
+        const name = document.getElementById('name').value.trim();
+        const feedbackText = document.getElementById('feedbackInput').value.trim();
+        const rating = document.getElementById('rating').value;
+        if (!name || !feedbackText) {
+          showMessage('Please enter your name and feedback.', 'info');
+          return;
+        }
+        showMessage(`Thanks for your feedback, ${name}!`, 'success');
+        console.log(`Feedback received:\nName: ${name}\nRating: ${rating}\nFeedback: ${feedbackText}`);
+        document.getElementById('feedbackForm').reset();
+      });
+
+    });
+  </script>
+</body>
+
+</html>
